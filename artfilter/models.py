@@ -11,12 +11,12 @@ mpl.rcParams['axes.grid'] = False
 
 import time
 import tensorflow as tf
-import tensorflow.contrib.eager as tfe
+# import tensorflow.contrib.eager as tfe
 
 from tensorflow.python.keras.preprocessing import image as kp_image
 from tensorflow.python.keras import models as keras_models
 
-from scipy.misc import imsave
+# from scipy.misc import imsave
 
 from django.conf import settings
 from django.utils.text import slugify
@@ -30,7 +30,6 @@ class ArtFilter(models.Model):
     original = models.FileField(upload_to='origin', verbose_name="Оригинал")
     result = models.FileField(upload_to='result', verbose_name="Результат", blank=True, null=True)
     logs = models.TextField(blank=True, null=True, verbose_name="Логи")
-
 
     def __str__(self):
         return self.title
@@ -46,7 +45,7 @@ class ArtFilter(models.Model):
         )
         self.logs = loss
         model.save(path)
-        self.result = path.replace(result_dir,'result/')
+        self.result = path.replace(result_dir, 'result/')
         self.save()
 
     def load_train_model(self):
@@ -68,7 +67,7 @@ class ArtFilter(models.Model):
 
         # Set initial image
         init_image = self.load_and_process_img(content_path)
-        init_image = tfe.Variable(init_image, dtype=tf.float32)
+        init_image = tf.Variable(init_image, dtype=tf.float32)
         # Load weights
         model.load_weights(self.result.path)
 
@@ -312,7 +311,7 @@ class ArtFilter(models.Model):
                    num_iterations=1000,
                    content_weight=1e3,
                    style_weight=1e-2):
-        tf.enable_eager_execution()
+        # tf.enable_eager_execution()
         print("Eager execution: {}".format(tf.executing_eagerly()))
         # We don't need to (or want to) train any layers of our model, so we set their
         # trainable to false.
@@ -329,9 +328,9 @@ class ArtFilter(models.Model):
 
         # Set initial image
         init_image = self.load_and_process_img(content_path)
-        init_image = tfe.Variable(init_image, dtype=tf.float32)
+        init_image = tf.Variable(init_image, dtype=tf.float32)
         # Create our optimizer
-        opt = tf.train.AdamOptimizer(learning_rate=5, beta1=0.99, epsilon=1e-1)
+        opt = tf.compat.v1.train.AdamOptimizer(learning_rate=5, beta1=0.99, epsilon=1e-1)
 
         # Store our best result
         best_loss, best_img = float('inf'), None

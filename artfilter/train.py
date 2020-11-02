@@ -54,7 +54,7 @@ def main(style, style_weight=4, content_weight=1.0, tv_weight=1e-6, image_size=2
 
     datagen = ImageDataGenerator()
 
-    dummy_y = np.zeros((train_batchsize,img_width,img_height,3)) # Dummy output, not used since we use regularizers to train
+    dummy_y = np.zeros((train_batchsize, img_width, img_height, 3)) # Dummy output, not used since we use regularizers to train
 
  
 
